@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Deep Reinforcement Learning for Robotic Grasping from Octrees</title>
+    <meta name="author" content="Andrej Orsula" />
+    <meta
+      name="description"
+      content="Master's thesis of Andrej Orsula, Aalborg University, 2021. Compressed and full-resolution editions."
+    />
+    <style>
+      :root {
+        color-scheme: light dark;
+        --text: #1d1d1f;
+        --muted: #5f6368;
+        --line: #d9dce1;
+        --card: #ffffff;
+        --page: #f5f6f8;
+        --accent: #0077a8;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --text: #ececee;
+          --muted: #a6a9ad;
+          --line: #3a3d42;
+          --card: #1f2124;
+          --page: #141517;
+          --accent: #00a4e1;
+        }
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; }
+      body {
+        background: var(--page);
+        color: var(--text);
+        font: 17px/1.55 "EB Garamond", Garamond, Georgia, "Times New Roman", serif;
+      }
+      main { max-width: 46rem; margin: 0 auto; padding: 4rem 1.5rem 3rem; }
+      .kicker {
+        margin: 0 0 1.25rem;
+        color: var(--muted);
+        font-size: 0.8rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+      h1 { margin: 0; font-size: 2.4rem; line-height: 1.15; }
+      .author { margin: 1.25rem 0 2.5rem; font-size: 1.15rem; }
+      .editions { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); }
+      .edition {
+        display: block;
+        padding: 1.25rem 1.4rem;
+        border: 1px solid var(--line);
+        border-top: 3px solid var(--accent);
+        border-radius: 6px;
+        background: var(--card);
+        color: inherit;
+        text-decoration: none;
+      }
+      .edition:hover, .edition:focus-visible { border-color: var(--accent); }
+      .edition h2 { margin: 0 0 0.4rem; font-size: 1.3rem; }
+      .edition p { margin: 0 0 0.9rem; color: var(--muted); }
+      .edition .meta { font-size: 0.85rem; letter-spacing: 0.04em; color: var(--accent); }
+      section { margin-top: 2.5rem; }
+      section h2 { margin: 0 0 0.5rem; font-size: 1.05rem; }
+      section p { margin: 0; }
+      a { color: var(--accent); }
+      pre {
+        overflow-x: auto;
+        margin: 0;
+        padding: 1rem;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        background: var(--card);
+        font: 0.8rem/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      }
+      footer { margin-top: 3rem; color: var(--muted); font-size: 0.85rem; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <p class="kicker">Master's thesis &middot; Aalborg University &middot; 2021</p>
+      <h1>Deep Reinforcement Learning for Robotic Grasping from Octrees</h1>
+      <p class="author">Andrej Orsula</p>
+
+      <div class="editions">
+        <a class="edition" href="msc_thesis_AndrejOrsula.pdf">
+          <h2>Digital edition</h2>
+          <p>Images at 300 dpi.</p>
+          <span class="meta">PDF &middot; {{DIGITAL_PAGES}} pages &middot; {{DIGITAL_SIZE}}</span>
+        </a>
+        <a class="edition" href="msc_thesis_AndrejOrsula_full.pdf">
+          <h2>Full resolution</h2>
+          <p>As submitted.</p>
+          <span class="meta">PDF &middot; {{FULL_PAGES}} pages &middot; {{FULL_SIZE}}</span>
+        </a>
+      </div>
+
+      <section>
+        <h2>Resources</h2>
+        <p>
+          <a href="https://github.com/AndrejOrsula/drl_grasping">Source code</a> &middot;
+          <a href="https://youtube.com/playlist?list=PLzcIGFRbGF3Qr4XSzAjNwOMPaeDn5J6i1">Recordings</a> &middot;
+          <a href="https://github.com/AndrejOrsula/msc_thesis/tree/master/experimental_evaluation">Experimental data</a>
+        </p>
+      </section>
+
+      <section>
+        <h2>Cite</h2>
+        <pre>@mastersthesis{orsula2021deep,
+  title  = {{Deep Reinforcement Learning for Robotic Grasping from Octrees}},
+  author = {Orsula, Andrej},
+  type   = {Master's Thesis},
+  school = {Aalborg University},
+  year   = {2021},
+}</pre>
+      </section>
+
+      <footer>
+        Built from <a href="https://github.com/AndrejOrsula/msc_thesis">github.com/AndrejOrsula/msc_thesis</a>
+        at <a href="https://github.com/AndrejOrsula/msc_thesis/commit/{{REVISION}}">{{REVISION_SHORT}}</a>.
+      </footer>
+    </main>
+  </body>
+</html>

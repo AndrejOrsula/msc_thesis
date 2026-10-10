@@ -1,0 +1,4 @@
+[submodule "template"]
+	path = template
+	url = https://github.com/AndrejOrsula/earthrise_thesis_template
+	branch = main

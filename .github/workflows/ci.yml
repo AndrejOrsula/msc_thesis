@@ -1,0 +1,130 @@
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: "${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}"
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+env:
+  UV_VERSION: "0.8.24"
+  PRE_COMMIT_VERSION: "4.6.2"
+  NO_COLOR: "1"
+
+jobs:
+  lint:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Check out the thesis
+        uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - &setup-uv
+        name: Set up uv
+        uses: astral-sh/setup-uv@v10.2.0
+        with:
+          version: ${{ env.UV_VERSION }}
+          enable-cache: false
+      - name: Cache the pre-commit environments
+        uses: actions/cache@v6.1.0
+        with:
+          path: ~/.cache/pre-commit
+          key: pre-commit-${{ runner.os }}-${{ hashFiles('.pre-commit-config.yaml') }}
+      - name: Run the pre-commit hooks
+        run: uvx "pre-commit@$PRE_COMMIT_VERSION" run --all-files --show-diff-on-failure
+
+  build:
+    if: >-
+      ${{ !(github.repository == 'AndrejOrsula/msc_thesis' &&
+            (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
+            github.ref == 'refs/heads/master') }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - &checkout
+        name: Check out the thesis and its template
+        uses: actions/checkout@v7.0.1
+        with:
+          submodules: recursive
+          persist-credentials: false
+      - *setup-uv
+      - &build-site
+        name: Optimize the thesis and assemble the site
+        run: uv run --no-project --script utils/site.py dist --revision "$GITHUB_SHA"
+      - &summary
+        name: Summarize the editions
+        run: |
+          {
+            echo "## Thesis"
+            echo
+            echo "| File | Size |"
+            echo "|---|---|"
+            for file in dist/*.pdf; do
+              printf "| \`%s\` | %s |\n" "$file" \
+                "$(awk -v b="$(wc -c <"$file")" 'BEGIN { printf "%.1f MB", b / 1e6 }')"
+            done
+          } >>"$GITHUB_STEP_SUMMARY"
+
+  publish:
+    if: >-
+      ${{ github.repository == 'AndrejOrsula/msc_thesis' &&
+          (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
+          github.ref == 'refs/heads/master' }}
+    needs: lint
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - *checkout
+      - *setup-uv
+      - *build-site
+      - *summary
+
+      - name: Upload the site
+        uses: actions/upload-pages-artifact@v5.0.0
+        with:
+          path: dist
+      - name: Deploy the site to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5.0.1
+
+      - name: Wait for GitHub Pages to serve the site
+        env:
+          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          set -euo pipefail
+          url="${PAGE_URL%/}"
+          live() {
+            local page file
+            page="$(curl -fsSL "$url/?revision=$GITHUB_SHA")" || return 1
+            [[ "$page" == *"$GITHUB_SHA"* ]] || return 1
+            for file in dist/*.pdf; do
+              [ "$(curl -fsSL "$url/${file#dist/}?revision=$GITHUB_SHA" | sha256sum)" = \
+                "$(sha256sum <"$file")" ] || return 1
+            done
+          }
+          for _ in $(seq 60); do
+            if live; then
+              echo "Live at $url/"
+              echo "Published at <$url/>" >>"$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "$url/ does not serve $GITHUB_SHA after 10 minutes; check that Settings > Pages deploys from GitHub Actions" >&2
+          exit 1

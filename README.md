@@ -1,8 +1,8 @@
-# Master's Thesis - Deep Reinforcement Learning for Robotic Grasping from Octrees
+# [Master's Thesis - Deep Reinforcement Learning for Robotic Grasping from Octrees](https://andrejorsula.github.io/msc_thesis)
 
 This repository contains LaTeX setup for my Master's Thesis conducted at Aalborg University, Denmark. If you are interested in the source code, please see [AndrejOrsula/drl_grasping](https://github.com/AndrejOrsula/drl_grasping).
 
-Compiled PDF: [**master_thesis.pdf**](./master_thesis.pdf)
+Compiled PDF: [**digital edition**](https://andrejorsula.github.io/msc_thesis/msc_thesis_AndrejOrsula.pdf) (images at 300 dpi) or [**full resolution**](./master_thesis.pdf) (as submitted)
 
 <a href="./master_thesis.pdf">
     <img src="./graphics/_readme/frontpage.svg" width="30%">
@@ -13,12 +13,22 @@ Accompanying recordings can be viewed under [YouTube playlist](https://youtube.c
 ## Citation
 
 ```bibtex
-@mastersthesis{orsula_deep_2021,
-  author = {Andrej Orsula},
-  title  = {{Deep} {Reinforcement} {Learning} for {Robotic} {Grasping} from {Octrees}},
+@mastersthesis{orsula2021deep,
+  title  = {{Deep Reinforcement Learning for Robotic Grasping from Octrees}},
+  author = {Orsula, Andrej},
+  type   = {Master's Thesis},
   school = {Aalborg University},
-  year   = {2021}
+  year   = {2021},
 }
+```
+
+## Website
+
+[CI](.github/workflows/ci.yml) publishes the thesis to <https://andrejorsula.github.io/msc_thesis>. It downsamples the images of the submitted `master_thesis.pdf` with the tools of the [template submodule](https://github.com/AndrejOrsula/earthrise_thesis_template) and verifies the result against the original. To build the site locally with [uv](https://docs.astral.sh/uv):
+
+```bash
+git submodule update --init
+uv run --no-project --script utils/site.py dist --revision "$(git rev-parse HEAD)"
 ```
 
 ## Disclaimer (LaTeX Template)

@@ -293,3 +293,7 @@ TSWLatexianTemp*
 
 # ODS lock
 .~lock*#
+
+# Site build
+/dist/
+__pycache__/
